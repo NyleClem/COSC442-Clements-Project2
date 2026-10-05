@@ -33,3 +33,17 @@ The failing tests reported `VendingMachineException: Invalid amount` for amounts
 
 **Correction:**  
 Changed the validation condition from `amount < 1` to `amount < 0`.
+
+## Test Sensitivity Experiment
+
+**Injected fault:**  
+I temporarily changed `returnChange()` so that it always returns `0` instead of returning the previous balance. The changed line was marked with `// INJECTED FAULT FOR TEST VALIDATION`.
+
+**Test that failed:**  
+`testReturnChangeReturnsBalanceAndResetsToZero()`
+
+**JUnit failure message:**  
+Expected `[4.25]` but was `[0.0]`.
+
+**Why the test detected the fault:**  
+The test inserts `4.25` into the vending machine and then calls `returnChange()`. According to the Javadocs, `returnChange()` should return the amount of change currently in the machine and reset the balance to zero. Since the injected fault caused the method to return `0` instead of `4.25`, the assertion comparing the returned change to `4.25` failed.
